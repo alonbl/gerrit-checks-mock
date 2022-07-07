@@ -1,0 +1,31 @@
+name: Style
+
+on:
+  - push
+  - pull_request
+
+env:
+  GOOGLE_JAVA_FORMAT_VERSION: "1.15.0"
+
+jobs:
+  build:
+    name: style
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: checkout.self
+        uses: actions/checkout@v3
+      - name: download.google-java-format
+        uses: robinraju/release-downloader@v1.4
+        with:
+          repository: google/google-java-format
+          tag: v${{ env.GOOGLE_JAVA_FORMAT_VERSION }}
+          fileName: google-java-format-${{ env.GOOGLE_JAVA_FORMAT_VERSION }}-all-deps.jar
+          tarball: false
+          zipball: false
+      - name: fixups
+        run: |
+          ln -s google-java-format-*.jar google-java-format.jar
+      - name: check
+        run: |
+          find src/ -name '*.java' | xargs java -jar google-java-format.jar -r --set-exit-if-changed
