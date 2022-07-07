@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  - push
+  - pull_request
+
+env:
+  GERRIT_VERSION: "v3.6.1"
+  BAZEL_VERSION: "5.2.0"
+  CACHE_VERSION: 1
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: cache.bazel
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/bazel
+          key: bazel-cache-${{ env.CACHE_VERSION }}
+      - name: checkout.self
+        uses: actions/checkout@v3
+        with:
+          path: gerrit-checks-mock
+      - name: checkout.gerrit
+        run: |
+          git clone \
+            --depth 1 \
+            --recurse-submodules \
+            --branch ${{ env.GERRIT_VERSION }} \
+            https://gerrit.googlesource.com/gerrit
+      - run: |
+          ln -s ../../gerrit-checks-mock gerrit/plugins/checks-mock
+      - name: download.bazel
+        uses: robinraju/release-downloader@v1.4
+        with:
+          repository: bazelbuild/bazel
+          tag: "${{ env.BAZEL_VERSION }}"
+          fileName: bazel-${{ env.BAZEL_VERSION }}-linux-x86_64
+          tarball: false
+          zipball: false
+      - name: fixups
+        run: |
+          chmod a+x bazel-${BAZEL_VERSION}-linux-x86_64
+          ln -s bazel-${BAZEL_VERSION}-linux-x86_64 bazel
+      - name: build
+        run: |
+          cd gerrit
+          ../bazel build plugins/checks-mock:checks-mock
+      - name: artifact.upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: checks-mock-plugin-${{ env.GERRIT_VERSION }}
+          path: |
+            gerrit/bazel-bin/plugins/checks-mock/checks-mock.jar
