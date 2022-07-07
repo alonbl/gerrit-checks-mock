@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig-plugins-base.json",
+  "compilerOptions": {
+    "noUnusedParameters": false,
+    "outDir": "../../../.ts-out/plugins/checks-mock/web",
+    "target": "es2020"
+  },
+  "include": [
+    "**/*"
+  ]
+}
