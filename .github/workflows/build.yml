@@ -37,7 +37,7 @@ jobs:
         uses: robinraju/release-downloader@v1.4
         with:
           repository: bazelbuild/bazel
-          tag: "5.2.0"
+          tag: "${{ env.BAZEL_VERSION }}"
           fileName: bazel-${{ env.BAZEL_VERSION }}-linux-x86_64
           tarball: false
           zipball: false
