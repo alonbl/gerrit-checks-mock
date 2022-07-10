@@ -17,7 +17,7 @@ jobs:
       - name: checkout.gerrit
         uses: actions/checkout@v3
         with:
-          repository: gerritCodeReview/gerrit
+          repository: https://gerrit.googlesource.com/gerrit
           ref: v3.6.1
           submodules: recursive
       - name: checkout
