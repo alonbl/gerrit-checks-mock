@@ -5,8 +5,8 @@ on:
   - pull_request
 
 env:
-  BAZEL_VERSION: "3.10"
-  GERRIT_VERSION: "py310"
+  GERRIT_VERSION: "v3.6.1"
+  BAZEL_VERSION: "5.2.0"
 
 jobs:
   build:
@@ -14,13 +14,17 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: checkout
+      - name: checkout.self
         uses: actions/checkout@v3
         with:
           path: gerrit-checks-mock
       - name: checkout.gerrit
         run: |
-          git clone --depth 1 --recurse-submodules --branch v3.6.1 https://gerrit.googlesource.com/gerrit
+          git clone \
+            --depth 1 \
+            --recurse-submodules \
+            --branch ${{ env.GERRIT_VERSION }} \
+            https://gerrit.googlesource.com/gerrit
       - run: |
           ln -s ../../gerrit-checks-mock gerrit/plugins/checks-mock
       - name: download.bazel
@@ -28,12 +32,21 @@ jobs:
         with:
           repository: bazelbuild/bazel
           tag: "5.2.0"
-          fileName: bazel-5.2.0-linux-x86_64
+          fileName: bazel-${{ env.BAZEL_VERSION }}-linux-x86_64
           tarball: false
           zipball: false
       - name: test
         run: |
-          ls -la
-          ls -la gerrit/plugins
-          ls -la gerrit/plugins/checks-mock/
-          ./bazel-5.2.0-linux-x86_64 --help
+          chmod a+x bazel-${BAZEL_VERSION}-linux-x86_64
+          ln -s bazel-${BAZEL_VERSION}-linux-x86_64 bazel
+          ./bazel --help
+      - name: build
+        run: |
+          cd gerrit
+          ../bazel build plugins/checks-mock:checks-mock
+      - name: artifact.upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: checks-mock-plugin-${{ env.GERRIT_VERSION }}
+          path: |
+            gerrit/bazel-bin/plugins/checks-mock/checks-mock.jar
