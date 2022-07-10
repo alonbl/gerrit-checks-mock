@@ -14,19 +14,17 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: checkout.gerrit
-        uses: actions/checkout@v3
-        with:
-          repository: https://gerrit.googlesource.com/gerrit
-          ref: v3.6.1
-          submodules: recursive
       - name: checkout
         uses: actions/checkout@v3
         with:
-          path: plugins/checks-mock
+          path: gerrit-checks-mock
+      - name: checkout.gerrit
+        run: |
+          git clone --depth 1 --recurse-submodules --branch v3.6.1 https://gerrit.googlesource.com/gerrit
       - run: |
-          ls -la plugins
-          ls -la plugins/checks-mock
+          ln -s ../../gerrit-checks-mock gerrit/plugins/checks-mock
+          ls -la gerrit/plugins
+          ls -la gerrit/plugins/checks-mock
       - name: download.bazel
         uses: robinraju/release-downloader@v1.4
         with:
