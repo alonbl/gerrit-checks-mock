@@ -23,8 +23,6 @@ jobs:
           git clone --depth 1 --recurse-submodules --branch v3.6.1 https://gerrit.googlesource.com/gerrit
       - run: |
           ln -s ../../gerrit-checks-mock gerrit/plugins/checks-mock
-          ls -la gerrit/plugins
-          ls -la gerrit/plugins/checks-mock
       - name: download.bazel
         uses: robinraju/release-downloader@v1.4
         with:
@@ -33,3 +31,9 @@ jobs:
           fileName: bazel-5.2.0-linux-x86_64
           tarball: false
           zipball: false
+      - name: test
+        run: |
+          ls -la
+          ls -la gerrit/plugins
+          ls -la gerrit/plugins/checks-mock/
+          ./bazel-5.2.0-linux-x86_64 --help
