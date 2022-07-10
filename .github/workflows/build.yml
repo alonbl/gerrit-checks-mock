@@ -28,7 +28,7 @@ jobs:
           ls -la plugins
           ls -la plugins/checks-mock
       - name: download.bazel
-        uses: uses: robinraju/release-downloader@v1.4
+        uses: robinraju/release-downloader@v1.4
         with:
           repository: bazelbuild/bazel
           tag: "5.2.0"
