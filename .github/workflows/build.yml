@@ -7,6 +7,7 @@ on:
 env:
   GERRIT_VERSION: "v3.6.1"
   BAZEL_VERSION: "5.2.0"
+  CACHE_VERSION: 1
 
 jobs:
   build:
@@ -14,6 +15,11 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+      - name: cache.bazel
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/bazel
+          key: bazel-cache-${{ env.CACHE_VERSION }}
       - name: checkout.self
         uses: actions/checkout@v3
         with:
@@ -35,11 +41,10 @@ jobs:
           fileName: bazel-${{ env.BAZEL_VERSION }}-linux-x86_64
           tarball: false
           zipball: false
-      - name: test
+      - name: fixups
         run: |
           chmod a+x bazel-${BAZEL_VERSION}-linux-x86_64
           ln -s bazel-${BAZEL_VERSION}-linux-x86_64 bazel
-          ./bazel --help
       - name: build
         run: |
           cd gerrit
