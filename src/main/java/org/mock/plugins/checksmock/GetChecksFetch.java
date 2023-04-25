@@ -4,6 +4,7 @@ import com.google.common.flogger.FluentLogger;
 import com.google.gerrit.extensions.restapi.Response;
 import com.google.gerrit.extensions.restapi.RestReadView;
 import com.google.gerrit.json.OutputFormat;
+import com.google.gerrit.server.change.ChangeTriplet;
 import com.google.gerrit.server.change.RevisionResource;
 import com.google.gerrit.server.config.PluginConfig;
 import com.google.gerrit.server.config.PluginConfigFactory;
@@ -84,7 +85,7 @@ class GetChecksFetch implements RestReadView<RevisionResource> {
     String project;
 
     @SerializedName("changeId")
-    Integer changeId;
+    String changeId;
 
     @SerializedName("revision")
     Integer revision;
@@ -93,7 +94,7 @@ class GetChecksFetch implements RestReadView<RevisionResource> {
       accountId = rsrc.getAccountId().get();
       emailAddresses = rsrc.getUser().getEmailAddresses();
       project = rsrc.getProject().get();
-      changeId = rsrc.getPatchSet().id().changeId().get();
+      changeId = ChangeTriplet.format(rsrc.getChange());
       revision = rsrc.getPatchSet().id().get();
     }
   }

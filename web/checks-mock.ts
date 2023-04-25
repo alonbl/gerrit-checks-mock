@@ -57,7 +57,7 @@ export class ChecksMockProvider {
 
 			return await this.plugin
 				.restApi()
-				.get(`/changes/${change.changeNumber}/revisions/${change.patchsetNumber}/${this.plugin.getPluginName()}~checks_fetch`);
+				.get(`/changes/${change.changeInfo.id}/revisions/${change.patchsetNumber}/${this.plugin.getPluginName()}~checks_fetch`);
 		} catch (error: unknown) {
 			console.info(error);
 			return {
