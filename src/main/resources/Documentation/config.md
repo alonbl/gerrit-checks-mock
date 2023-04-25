@@ -10,7 +10,7 @@ Global configuration in `gerrit.config`:
   [plugin "@PLUGIN@"]
   enable = true
   fetchPollingIntervalSeconds = 60
-  fetchEndpointURL = @URL@
+  fetchEndpointURL = @URL@/fetch
   fetchEndpointURLConnectTimeout = 20
   fetchEndpointURLRequestTimeout = 20
 ```
