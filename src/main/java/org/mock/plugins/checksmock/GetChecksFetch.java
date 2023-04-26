@@ -3,6 +3,7 @@ package org.mock.plugins.checksmock;
 import com.google.common.flogger.FluentLogger;
 import com.google.gerrit.extensions.restapi.Response;
 import com.google.gerrit.extensions.restapi.RestReadView;
+import com.google.gerrit.extensions.restapi.Url;
 import com.google.gerrit.json.OutputFormat;
 import com.google.gerrit.server.change.ChangeTriplet;
 import com.google.gerrit.server.change.RevisionResource;
@@ -94,7 +95,12 @@ class GetChecksFetch implements RestReadView<RevisionResource> {
       accountId = rsrc.getAccountId().get();
       emailAddresses = rsrc.getUser().getEmailAddresses();
       project = rsrc.getProject().get();
-      changeId = ChangeTriplet.format(rsrc.getChange());
+
+      /* TEMP WORKAROUND - BEGIN */
+      String[] x = ChangeTriplet.format(rsrc.getChange()).split("~");
+      changeId = Url.encode(x[0]) + "~" + Url.encode(x[1]) + "~" + Url.encode(x[2]);
+      /* TEMP WORKAROUND - END */
+
       revision = rsrc.getPatchSet().id().get();
     }
   }
