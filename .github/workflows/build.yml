@@ -5,9 +5,9 @@ on:
   - pull_request
 
 env:
-  GERRIT_VERSION: "v3.6.1"
-  BAZEL_VERSION: "5.2.0"
-  CACHE_VERSION: 1
+  GERRIT_VERSION: "v3.7.2"
+  BAZEL_VERSION: "5.4.0"
+  CACHE_VERSION: 2
 
 jobs:
   build:
