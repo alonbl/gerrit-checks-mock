@@ -10,6 +10,7 @@ as `@PLUGIN@`.
 Then issue
 
 ```
+  ln -s ../../@PLUGIN@ plugins/@PLUGIN@
   bazel build //plugins/@PLUGIN@:@PLUGIN@
 ```
 

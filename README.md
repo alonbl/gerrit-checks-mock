@@ -17,6 +17,7 @@ Checkout Gerrit including and recursive submodules.
 At Gerrit root, execute:
 
 ```sh
+$ ln -s ../../gerrit-checks-mock plugins/checks-mock
 $ bazel build plugins/checks-mock:checks-mock
 ```
 Output resides at `bazel-bin/plugins/checks-mock/checks-mock.jar`
