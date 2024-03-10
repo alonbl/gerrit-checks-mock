@@ -1,4 +1,10 @@
-load("//tools/bzl:plugin.bzl", "gerrit_plugin")
+load("@rules_java//java:defs.bzl", "java_library")
+load(
+    "//tools/bzl:plugin.bzl",
+    "PLUGIN_DEPS",
+    "PLUGIN_TEST_DEPS",
+    "gerrit_plugin",
+)
 
 gerrit_plugin(
     name = "checks-mock",
@@ -9,6 +15,6 @@ gerrit_plugin(
         "Implementation-Title: Gerrit checks mock plugin",
         "Implementation-URL: https://github.com/alonbl/gerrit-checks-mock",
     ],
-    resources = glob(["src/main/resources/**/*"]),
     resource_jars = ["//plugins/checks-mock/web:checks-mock"],
+    resources = glob(["src/main/resources/Documentation/*.md"]),
 )
