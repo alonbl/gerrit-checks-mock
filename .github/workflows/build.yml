@@ -5,9 +5,9 @@ on:
   - pull_request
 
 env:
-  GERRIT_VERSION: "v3.7.4"
-  BAZEL_VERSION: "6.0.0"
-  CACHE_VERSION: 3
+  GERRIT_VERSION: "v3.9.2"
+  BAZEL_VERSION: "6.5.0"
+  CACHE_VERSION: 4
 
 jobs:
   build:
@@ -15,26 +15,8 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: cache.bazel
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/bazel
-          key: bazel-cache-${{ env.CACHE_VERSION }}
-      - name: checkout.self
-        uses: actions/checkout@v3
-        with:
-          path: gerrit-checks-mock
-      - name: checkout.gerrit
-        run: |
-          git clone \
-            --depth 1 \
-            --recurse-submodules \
-            --branch ${{ env.GERRIT_VERSION }} \
-            https://gerrit.googlesource.com/gerrit
-      - run: |
-          ln -s ../../gerrit-checks-mock gerrit/plugins/checks-mock
       - name: download.bazel
-        uses: robinraju/release-downloader@v1.4
+        uses: robinraju/release-downloader@v1.9
         with:
           repository: bazelbuild/bazel
           tag: "${{ env.BAZEL_VERSION }}"
@@ -45,12 +27,32 @@ jobs:
         run: |
           chmod a+x bazel-${BAZEL_VERSION}-linux-x86_64
           ln -s bazel-${BAZEL_VERSION}-linux-x86_64 bazel
-      - name: build
+      - name: cache.bazel
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/bazel
+          key: bazel-cache-${{ env.CACHE_VERSION }}
+      - name: checkout.self
+        uses: actions/checkout@v4
+        with:
+          path: gerrit-checks-mock
+      - name: checkout.gerrit
         run: |
-          cd gerrit
-          ../bazel build plugins/checks-mock:checks-mock
+          git clone \
+            --depth 1 \
+            --recurse-submodules \
+            --branch ${{ env.GERRIT_VERSION }} \
+            https://gerrit.googlesource.com/gerrit
+      - name: link
+        working-directory: gerrit
+        run: |
+          ln -s ../../gerrit-checks-mock plugins/checks-mock
+      - name: build
+        working-directory: gerrit
+        run: |
+          ../bazel build --noenable_bzlmod //plugins/checks-mock
       - name: artifact.upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: checks-mock-plugin-${{ env.GERRIT_VERSION }}
           path: |

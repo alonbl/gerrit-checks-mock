@@ -1,11 +1,9 @@
 {
   "extends": "../../tsconfig-plugins-base.json",
   "compilerOptions": {
-    "noUnusedParameters": false,
-    "outDir": "../../../.ts-out/plugins/checks-mock/web",
-    "target": "es2020"
+    "outDir": "../../../.ts-out/plugins/checks-mock-ts", /* overridden by bazel */
   },
   "include": [
-    "**/*"
+    "**/*.ts"
   ]
 }
