@@ -87,6 +87,9 @@ class GetChecksFetch implements RestReadView<RevisionResource> {
     @SerializedName("changeId")
     String changeId;
 
+    @SerializedName("commitId")
+    String commitId;
+
     @SerializedName("revision")
     Integer revision;
 
@@ -94,8 +97,8 @@ class GetChecksFetch implements RestReadView<RevisionResource> {
       accountId = rsrc.getAccountId().get();
       emailAddresses = rsrc.getUser().getEmailAddresses();
       project = rsrc.getProject().get();
-      changeId =
-          Url.encode(rsrc.getChange().getDest().project().get()) + "~" + rsrc.getChange().getId();
+      changeId = Url.encode(rsrc.getProject().get()) + "~" + rsrc.getChange().getId();
+      commitId = rsrc.getPatchSet().commitId().name();
       revision = rsrc.getPatchSet().id().get();
     }
   }
