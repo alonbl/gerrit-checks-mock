@@ -5,9 +5,9 @@ on:
   - pull_request
 
 env:
-  GERRIT_VERSION: "v3.13.4"
-  BAZEL_VERSION: "7.2.1"
-  CACHE_VERSION: 5
+  GERRIT_VERSION: "v3.14.2"
+  BAZEL_VERSION: "8.6.0"
+  CACHE_VERSION: 6
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: download.bazel
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.13
         with:
           repository: bazelbuild/bazel
           tag: "${{ env.BAZEL_VERSION }}"
@@ -28,12 +28,12 @@ jobs:
           chmod a+x bazel-${BAZEL_VERSION}-linux-x86_64
           ln -s bazel-${BAZEL_VERSION}-linux-x86_64 bazel
       - name: cache.bazel
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
-          path: ~/.cache/bazel
+          path: ~/.gerritcodereview/bazel-cache
           key: bazel-cache-${{ env.CACHE_VERSION }}
       - name: checkout.self
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: gerrit-checks-mock
       - name: checkout.gerrit
@@ -50,9 +50,9 @@ jobs:
       - name: build
         working-directory: gerrit
         run: |
-          ../bazel build --noenable_bzlmod //plugins/checks-mock
+          ../bazel build //plugins/checks-mock
       - name: artifact.upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: checks-mock-plugin-${{ env.GERRIT_VERSION }}
           path: |
